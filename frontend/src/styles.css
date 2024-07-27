@@ -1,1 +1,62 @@
-/* You can add global styles to this file, and also import other style files */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background: radial-gradient(
+    circle,
+    #dfe9f3 20%,
+    #f0f4ff 70%,
+    #fff 100%
+  ); /* Degradado radial */
+
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+a {
+  color: #6366f1;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #4f46e5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Poppins", sans-serif;
+  margin-top: 0;
+}
+
+p {
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+button {
+  cursor: pointer;
+}
+
+.footer {
+  background-color: #111;
+  padding: 10px 20px;
+  color: #fff;
+  flex-shrink: 0; /* Evita que el footer se encoja */
+}
+
+main {
+  flex: 1; /* Toma todo el espacio disponible para empujar el footer al fondo */
+}
