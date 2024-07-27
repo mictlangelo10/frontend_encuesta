@@ -1,0 +1,65 @@
+<div class="encuesta-view-container" *ngIf="!encuestaFinalizada">
+  <h2>Selecciona la respuesta con la que te identifiques</h2>
+  <div class="progress">
+    <div
+      class="progress-bar progress-bar-striped progress-bar-animated bg-info"
+      [style.width]="progreso + '%'"
+      aria-valuenow="progreso"
+      aria-valuemin="0"
+      aria-valuemax="100"
+    ></div>
+  </div>
+  <div class="progress-text">{{ progreso }}% Completado</div>
+
+  <div class="alert-container">
+    <div class="alert alert-dismissible alert-danger" *ngIf="mostrarAlerta">
+      <button type="button" class="btn-close" (click)="cerrarAlerta()"></button>
+      <strong>¡Error! </strong>
+      <span>Por favor, selecciona una opción antes de continuar.</span>
+    </div>
+  </div>
+
+  <p>{{ preguntas[preguntaActual]?.texto }}</p>
+  <div class="opciones">
+    <button
+      class="opcion"
+      *ngFor="let opcion of preguntas[preguntaActual]?.opciones"
+      (click)="seleccionarOpcion(opcion.id)"
+      [class.selected]="opcionSeleccionada === opcion.id"
+    >
+      {{ opcion.texto }}
+    </button>
+  </div>
+
+  <div class="navegacion">
+    <button
+      class="atras"
+      (click)="navegarAtras()"
+      [disabled]="preguntaActual === 0"
+    >
+      Atrás
+    </button>
+    <button class="siguiente" (click)="navegarSiguiente()">
+      {{ preguntaActual < preguntas.length - 1 ? "Siguiente" : "Finalizar" }}
+    </button>
+  </div>
+</div>
+
+<div class="agradecimiento-container" *ngIf="encuestaFinalizada">
+  <div class="agradecimiento">
+    <div class="monito">
+      <div class="cabeza">
+        <div class="ojo izquierdo"></div>
+        <div class="ojo derecho"></div>
+        <div class="boca feliz"></div>
+      </div>
+      <div class="cuerpo"></div>
+      <div class="brazo izquierdo"></div>
+      <div class="brazo derecho"></div>
+      <div class="pierna izquierda"></div>
+      <div class="pierna derecha"></div>
+    </div>
+    <h2>¡Gracias por completar la encuesta!</h2>
+    <p>Tu opinión es muy importante para nosotros.</p>
+  </div>
+</div>
