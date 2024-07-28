@@ -8,9 +8,9 @@ import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { NavbarComponent } from './pages/navbar/navbar.component';
-import { FooterComponent } from './pages/footer/footer.component';
 import { EncuestaComponent } from './pages/encuesta/encuesta.component';
 import { LoginComponent } from './pages/login/login.component';
+import { FooterComponent } from './pages/footer/footer.component';
 
 @NgModule({
   declarations: [AppComponent, EncuestaComponent, LoginComponent],
@@ -23,7 +23,7 @@ import { LoginComponent } from './pages/login/login.component';
     FormsModule,
     CommonModule,
     NavbarComponent,
-    FooterComponent,
+    FooterComponent
   ],
   providers: [],
   bootstrap: [AppComponent],

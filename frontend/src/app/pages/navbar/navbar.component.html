@@ -4,8 +4,11 @@
     <a class="navbar-brand mx-auto" href="/">Worky</a>
 
     <!-- Botón de login a la derecha -->
-    <button class="btn btn-outline-light" (click)="navigateToLogin()">
+    <button class="btn btn-outline-light" *ngIf="!isLoggin" (click)="navigateToLogin()">
       Login
+    </button>
+    <button class="btn btn-outline-light" *ngIf="isLoggin" (click)="cerrarSesion()">
+      Cerrar Sesión
     </button>
   </div>
 </nav>
