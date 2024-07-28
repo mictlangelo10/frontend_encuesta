@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { EncuestaComponent } from './pages/encuesta/encuesta.component';
 import { HomeComponent } from './pages/home/home.component';
 import { LoginComponent } from './pages/login/login.component';
+import { AdministradorComponent } from './pages/administrador/administrador.component';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -10,6 +11,7 @@ const routes: Routes = [
   //{ path: 'perfil', component: 'LoginComponent'},
   { path: 'encuesta', component: EncuestaComponent },
   { path: '', component: HomeComponent },
+  { path: 'admin', component: AdministradorComponent}
 ];
 
 @NgModule({

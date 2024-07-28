@@ -5,19 +5,18 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
-export class UsuarioService {
+export class EntrenamientoService {
 
   private baseUrl = 'https://back-flask2.onrender.com';
 
   constructor(private http: HttpClient) { }
 
-   // Añadir un usuario
-   postUsuario(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/usuarios`, data);
+  data: any = {
+    "num_clusters": 3
   }
 
-  // Login
-  postLogin(data: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/login`, data);
+  // Hacer el entrenamiento
+  postEntrenamiento(): Observable<any> {
+    return this.http.post(`${this.baseUrl}/entrenar_kmeans`, this.data);
   }
 }

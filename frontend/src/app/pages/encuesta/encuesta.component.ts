@@ -1,12 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Pregunta } from '../../models/pregunta-respuesta';
+import { EncuestaService } from '../../services/encuesta.service';
 
 @Component({
   selector: 'app-encuesta',
   templateUrl: './encuesta.component.html',
   styleUrl: './encuesta.component.css',
 })
-export class EncuestaComponent {
+export class EncuestaComponent{
   preguntas: Pregunta[] = [
     {
       id: 1,
@@ -188,6 +189,9 @@ export class EncuestaComponent {
   progreso: number = 0;
   encuestaFinalizada: boolean = false;
   mostrarAlerta: boolean = false;
+  respuestas: { [key: string]: string } = {}; //Almacenar las respuestas
+
+  constructor(private encuestaService: EncuestaService){}
 
   seleccionarOpcion(opcionId: number) {
     this.opcionSeleccionada = opcionId;
@@ -198,12 +202,15 @@ export class EncuestaComponent {
     if (this.opcionSeleccionada === null) {
       this.mostrarAlerta = true; // Mostrar alerta si no se selecciona una opción
     } else if (this.preguntaActual < this.preguntas.length - 1) {
+      this.respuestas[(this.preguntaActual + 1).toString()] = this.opcionSeleccionada.toString();
       this.preguntaActual++;
       this.opcionSeleccionada = null;
       this.actualizarProgreso();
     } else {
+      this.respuestas[(this.preguntaActual + 1).toString()] = this.opcionSeleccionada.toString();
       this.finalizarEncuesta();
     }
+
   }
 
   navegarAtras() {
@@ -222,6 +229,14 @@ export class EncuestaComponent {
 
   finalizarEncuesta() {
     this.encuestaFinalizada = true;
+    this.encuestaService.postRespuesta(this.respuestas).subscribe(
+      response => {
+        console.log('Respuestas registradas con éxito:', response);
+      },
+      error => {
+        console.error('Error al registrar respuestas:', error);
+      }
+    );
   }
 
   cerrarAlerta() {

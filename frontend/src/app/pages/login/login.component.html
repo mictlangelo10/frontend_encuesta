@@ -3,14 +3,14 @@
     <h2>Iniciar Sesión</h2>
     <form (ngSubmit)="onSubmit()">
       <div class="form-group">
-        <label for="email">Correo Electrónico</label>
+        <label for="username">Nombre de Usuario</label>
         <input
-          type="email"
-          id="email"
+          type="text"
+          id="username"
           class="form-control"
-          placeholder="Ingresa tu correo"
-          [(ngModel)]="email"
-          name="email"
+          placeholder="Ingresa tu nombre de usuario"
+          [(ngModel)]="username"
+          name="username"
           required
         />
       </div>
@@ -29,7 +29,7 @@
       <button
         type="submit"
         class="btn btn-primary"
-        [disabled]="!email || !password"
+        [disabled]="!username || !password"
       >
         Ingresar
       </button>
