@@ -23,6 +23,12 @@
           </tr>
         </tbody>
       </table>
+      <div style="margin-top: 15px">
+        <h6>
+          Nivel de satisfacción:
+          {{ getNivelSatisfaccion(currentItems[0].etiqueta) || "N/A" }}
+        </h6>
+      </div>
     </div>
     <div class="card-footer paginacion">
       <button
@@ -33,7 +39,17 @@
       >
         Anterior
       </button>
-      <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+      <div class="pagina-y-boton">
+        <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+        <button
+          type="button"
+          class="btn btn-outline-light"
+          (click)="crearExcel()"
+        >
+          Exportar a Excel
+        </button>
+      </div>
+
       <button
         type="button"
         class="btn btn btn-outline-light"
@@ -45,37 +61,122 @@
     </div>
   </div>
 
-  <div class="grafica-select">
-    <label for="grafica">Selecciona una gráfica:</label>
-    <select id="grafica" (change)="onGraficaChange($event)">
-      <option value="grafica_codo">Gráfico del Codo</option>
-      <option value="grafica_datos_por_cluster">
-        Distribución de Datos por Cluster
-      </option>
-      <option value="grafica_distribucion_centroides">
-        Distribución de Centroides
-      </option>
-    </select>
-  </div>
+  <div class="card-large">
+    <div class="card-header">
+      <h2>Resultados en Gráficas</h2>
+    </div>
+    <div class="card-body">
+      <div class="grafica-select">
+        <label for="grafica"> Selecciona una gráfica:</label>
+        <select id="grafica" (change)="onGraficaChange($event)">
+          <option value="grafica_codo">Gráfico del Codo</option>
+          <option value="grafica_datos_por_cluster">
+            Distribución de Datos por Cluster
+          </option>
+          <option value="grafica_distribucion_centroides">
+            Distribución de Centroides
+          </option>
+        </select>
+      </div>
 
-  <div [hidden]="selectedGrafica !== 'grafica_codo'">
-    <h3>Gráfico del Codo</h3>
-    <img [src]="grafica_codo" alt="Gráfico del Codo" />
-  </div>
+      <div [hidden]="selectedGrafica !== 'grafica_codo'">
+        <h3>Gráfico del Codo</h3>
+        <p class="descripcion">{{ descripcion }}</p>
+        <div class="grafica-container">
+          <img [src]="grafica_codo" alt="Gráfico del Codo" />
+        </div>
+      </div>
 
-  <div [hidden]="selectedGrafica !== 'grafica_datos_por_cluster'">
-    <h3>Distribución de Datos por Cluster</h3>
-    <img
-      [src]="grafica_datos_por_cluster"
-      alt="Distribución de Datos por Cluster"
-    />
-  </div>
+      <div [hidden]="selectedGrafica !== 'grafica_datos_por_cluster'">
+        <h3>Distribución de Datos por Cluster</h3>
+        <p class="descripcion">{{ descripcion }}</p>
+        <div class="grafica-container">
+          <img
+            [src]="grafica_datos_por_cluster"
+            alt="Distribución de Datos por Cluster"
+          />
+        </div>
+      </div>
 
-  <div [hidden]="selectedGrafica !== 'grafica_distribucion_centroides'">
-    <h3>Distribución de Centroides</h3>
-    <img
-      [src]="grafica_distribucion_centroides"
-      alt="Distribución de Centroides"
-    />
+      <div [hidden]="selectedGrafica !== 'grafica_distribucion_centroides'">
+        <h3>Distribución de Centroides</h3>
+        <p class="descripcion">{{ descripcion }}</p>
+        <div class="grafica-container">
+          <img
+            [src]="grafica_distribucion_centroides"
+            alt="Distribución de Centroides"
+          />
+        </div>
+      </div>
+    </div>
+    <div class="card-footer">
+      <button type="button" class="btn btn-outline-light" (click)="openModal()">
+        Descargar PDF
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal"
+  *ngIf="isModalOpen"
+  tabindex="-1"
+  tabindex="-1"
+  [class.show]="isModalOpen"
+  [style.display]="isModalOpen ? 'block' : 'none'"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          Selecciona las gráficas para incluir en el reporte
+        </h5>
+      </div>
+      <div class="modal-body">
+        <div class="alert-container">
+          <div
+            class="alert alert-dismissible alert-danger"
+            *ngIf="mostrarAlerta"
+          >
+            <button
+              type="button"
+              class="btn-close"
+              (click)="cerrarAlerta()"
+            ></button>
+            <strong>¡Error! </strong>
+            <span>Por favor, selecciona una opción antes de continuar.</span>
+          </div>
+        </div>
+        <form>
+          <div *ngFor="let grafica of graficas">
+            <!-- Asegúrate de que cada checkbox tiene un ID único -->
+            <input
+              type="checkbox"
+              [id]="grafica.value"
+              [(ngModel)]="grafica.checked"
+              name="graficas"
+            />
+            <label [for]="grafica.value">{{ grafica.label }}</label>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-outline-secondary"
+          (click)="closeModal()"
+        >
+          Cerrar
+        </button>
+        <button
+          type="button"
+          class="btn btn-outline-primary"
+          (click)="generatePDF()"
+        >
+          Generar PDF
+        </button>
+      </div>
+    </div>
   </div>
 </div>
