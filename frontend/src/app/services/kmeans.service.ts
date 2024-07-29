@@ -3,17 +3,16 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class EntrenamientoService {
-
   private baseUrl = 'https://back-flask2.onrender.com';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   data: any = {
-    "num_clusters": 3
-  }
+    num_clusters: 3,
+  };
 
   // Hacer el entrenamiento
   postEntrenamiento(): Observable<any> {

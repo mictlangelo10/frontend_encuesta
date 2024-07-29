@@ -1,0 +1,81 @@
+<div class="encuesta-view-container">
+  <div class="title">
+    <h1>Bienvenido, comencemos a analizar los datos</h1>
+  </div>
+  <div class="card">
+    <div class="card-header">
+      <h2>Resultados del Cuestionario</h2>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Pregunta</th>
+            <th>Respuesta</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let question of preguntas; let i = index">
+            <td>{{ i + 1 }}</td>
+            <td>{{ question.descripcion }}</td>
+            <td>{{ currentItems[0]?.ponderacion[i + 1] || "N/A" }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card-footer paginacion">
+      <button
+        type="button"
+        class="btn btn btn-outline-light"
+        (click)="prevPage()"
+        [disabled]="currentPage === 0"
+      >
+        Anterior
+      </button>
+      <span>Página {{ currentPage + 1 }} de {{ totalPages }}</span>
+      <button
+        type="button"
+        class="btn btn btn-outline-light"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages - 1"
+      >
+        Siguiente
+      </button>
+    </div>
+  </div>
+
+  <div class="grafica-select">
+    <label for="grafica">Selecciona una gráfica:</label>
+    <select id="grafica" (change)="onGraficaChange($event)">
+      <option value="grafica_codo">Gráfico del Codo</option>
+      <option value="grafica_datos_por_cluster">
+        Distribución de Datos por Cluster
+      </option>
+      <option value="grafica_distribucion_centroides">
+        Distribución de Centroides
+      </option>
+    </select>
+  </div>
+
+  <div [hidden]="selectedGrafica !== 'grafica_codo'">
+    <h3>Gráfico del Codo</h3>
+    <img [src]="grafica_codo" alt="Gráfico del Codo" />
+  </div>
+
+  <div [hidden]="selectedGrafica !== 'grafica_datos_por_cluster'">
+    <h3>Distribución de Datos por Cluster</h3>
+    <img
+      [src]="grafica_datos_por_cluster"
+      alt="Distribución de Datos por Cluster"
+    />
+  </div>
+
+  <div [hidden]="selectedGrafica !== 'grafica_distribucion_centroides'">
+    <h3>Distribución de Centroides</h3>
+    <img
+      [src]="grafica_distribucion_centroides"
+      alt="Distribución de Centroides"
+    />
+  </div>
+</div>

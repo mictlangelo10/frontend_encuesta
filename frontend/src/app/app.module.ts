@@ -11,9 +11,15 @@ import { NavbarComponent } from './pages/navbar/navbar.component';
 import { EncuestaComponent } from './pages/encuesta/encuesta.component';
 import { LoginComponent } from './pages/login/login.component';
 import { FooterComponent } from './pages/footer/footer.component';
+import { AdministradorComponent } from './pages/administrador/administrador.component';
 
 @NgModule({
-  declarations: [AppComponent, EncuestaComponent, LoginComponent],
+  declarations: [
+    AppComponent,
+    EncuestaComponent,
+    LoginComponent,
+    AdministradorComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -23,7 +29,7 @@ import { FooterComponent } from './pages/footer/footer.component';
     FormsModule,
     CommonModule,
     NavbarComponent,
-    FooterComponent
+    FooterComponent,
   ],
   providers: [],
   bootstrap: [AppComponent],

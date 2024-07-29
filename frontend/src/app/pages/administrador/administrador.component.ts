@@ -14,17 +14,22 @@ interface Etiquetas {
 @Component({
   selector: 'app-administrador',
   templateUrl: './administrador.component.html',
-  styleUrls: ['./administrador.component.css']
+  styleUrls: ['./administrador.component.css'],
 })
 export class AdministradorComponent implements OnInit {
-
   etiquetas: Etiquetas = {};
-  grafica_codo: any;
-  grafica_datos_por_cluster: any;
-  grafica_distribucion_centroides: any;
+  grafica_codo: any; // Trae base 64 y muestra cuantos clusteres se meten al algoritmo
+  grafica_datos_por_cluster: any; // Indica insatisfecho, satisfecho y medio
+  grafica_distribucion_centroides: any; // Indica
   preguntas: any = {};
   respuestas: Respuesta = {};
   respuestas_tabla: any = {};
+  selectedGrafica: string = 'grafica_codo';
+
+  currentPage: number = 0;
+  itemsPerPage: number = 15;
+  totalPages: number = 0;
+  currentItems: any[] = [];
 
   constructor(
     private router: Router,
@@ -45,57 +50,108 @@ export class AdministradorComponent implements OnInit {
     this.obtenerRespuestas();
   }
 
-  hacerEntrenamiento(){
-    this.kmeanService.postEntrenamiento().subscribe(res =>{
-      this.grafica_codo = res.resultado.grafica_codo;
-      this.grafica_datos_por_cluster = res.resultado.grafica_datos_por_cluster;
-      this.grafica_distribucion_centroides = res.resultado.grafica_distribucion_centroides;
+  hacerEntrenamiento() {
+    this.kmeanService.postEntrenamiento().subscribe((res) => {
+      this.grafica_codo = `data:image/png;base64,${res.resultado.grafica_codo}`;
+      this.grafica_datos_por_cluster = `data:image/png;base64,${res.resultado.grafica_datos_por_cluster}`;
+      this.grafica_distribucion_centroides = `data:image/png;base64,${res.resultado.grafica_distribucion_centroides}`;
       this.etiquetas = res.resultado.etiquetas;
-      console.log(this.etiquetas);
+      console.log('Etiquetas', this.etiquetas);
 
       // Después de obtener etiquetas, combinar con respuestas
       this.creacionTablaChida();
     });
   }
 
-  obtenerPreguntas(){
-    this.encuestaService.getPreguntas().subscribe(res =>{
+  obtenerPreguntas() {
+    this.encuestaService.getPreguntas().subscribe((res) => {
       this.preguntas = res.preguntas;
-      console.log(this.preguntas);
+      console.log('Preguntas', this.preguntas);
     });
   }
 
-  obtenerRespuestas(){
-    this.encuestaService.getRespuestas().subscribe(res =>{
+  obtenerRespuestas() {
+    this.encuestaService.getRespuestas().subscribe((res) => {
       this.respuestas = res.respuestas;
-      console.log(this.respuestas);
-      
+
       // Después de obtener respuestas, combinar con etiquetas
       this.creacionTablaChida();
     });
   }
 
   creacionTablaChida() {
-    // Asegúrate de que las respuestas y etiquetas se han obtenido
-    if (Object.keys(this.respuestas).length > 0 && Object.keys(this.etiquetas).length > 0) {
+    if (
+      Object.keys(this.respuestas).length > 0 &&
+      Object.keys(this.etiquetas).length > 0
+    ) {
       const respuestasArray = Object.values(this.respuestas) as any[];
       const etiquetasArray = Object.values(this.etiquetas) as number[];
 
       if (respuestasArray.length !== etiquetasArray.length) {
-        throw new Error("El número de respuestas y etiquetas no coincide.");
+        throw new Error('El número de respuestas y etiquetas no coincide.');
       }
 
-      // Combinar respuestas y etiquetas en el formato requerido
       this.respuestas_tabla = respuestasArray.map((respuesta, index) => {
-        // Crear un nuevo objeto para cada respuesta con la etiqueta
-        const respuestaConEtiqueta = {
-          ...respuesta, // Spread operator para copiar las respuestas
-          etiqueta: etiquetasArray[index] // Añadir la etiqueta
+        return {
+          respuestas: respuesta,
+          etiqueta: etiquetasArray[index],
+          ponderacion: this.ponderarRespuestas(respuesta),
         };
-        return respuestaConEtiqueta;
       });
 
-      console.log(this.respuestas_tabla);
+      this.totalPages = this.respuestas_tabla.length; // Cada página es un cuestionario completo
+      this.actualizarPagina();
     }
+  }
+
+  actualizarPagina() {
+    const startIndex = this.currentPage;
+    this.currentItems = [this.respuestas_tabla[startIndex]]; // Mostrar un cuestionario completo por página
+  }
+
+  ponderarRespuestas(respuestas: any) {
+    const ponderaciones = {
+      1: 'Muy insatisfecho',
+      2: 'Insatisfecho',
+      3: 'Neutra',
+      4: 'Satisfecho',
+      5: 'Muy satisfecho',
+    };
+
+    let ponderacion = {};
+    for (let key in respuestas) {
+      if (respuestas.hasOwnProperty(key)) {
+        ponderacion[key] = ponderaciones[respuestas[key]] || 'N/A';
+      }
+    }
+    return ponderacion;
+  }
+
+  prevPage() {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.actualizarPagina();
+    }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages - 1) {
+      this.currentPage++;
+      this.actualizarPagina();
+    }
+  }
+
+  getEtiquetaLabel(etiqueta: number): string {
+    const etiquetas = {
+      0: 'Medio',
+      1: 'Satisfecho',
+      2: 'Insatisfecho',
+    };
+    return etiquetas[etiqueta] || 'Desconocido';
+  }
+
+  onGraficaChange(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    this.selectedGrafica = target.value;
   }
 }
